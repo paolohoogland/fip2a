@@ -186,31 +186,6 @@ void ls_like(const char* path) {
     closedir(dir);
 }
 
-void fork_yourself(){
-    pid_t pid = fork(); // Create a new process, a child process
-    
-    if(pid<0){
-      perror("Fork error");
-      exit(EXIT_FAILURE);
-    }
-
-    if(pid==0){ // Child process
-      pid_t my_pid = getpid();
-      pid_t parent_pid = getppid();
-      printf("[Child] PID = %d, PPID = %d\n", my_pid, parent_pid);
-      int exit_code = my_pid % 10; // last digit of PID
-      exit(exit_code);
-    } 
-    else { // Parent process
-      printf("[Parent] PID child = %d\n", pid);
-      int status; // Store child exit status
-      waitpid(pid, &status, 0); // Wait for child to finish
-      if (WIFEXITED(status)) {
-          printf("[Parent] Return code child = %d\n", WEXITSTATUS(status));
-      }
-    }
-}
-
 void affiche_message(const char *message, char *prog_a_exec) {
   /* PT1 */
   // if(message == NULL) {
@@ -350,10 +325,6 @@ int main(int argc, char** argv)
   // ls_like(bin_input_param);
   // printf("\n\n");
 
-  /* ***** TP2 ***** */
-
-  /* ********** FORK YOURSELF ********** */
-  // fork_yourself();
 
   /* ********** AFFICHE MESSAGE ********** */
   affiche_message(bin_input_param, bin_output_param);
