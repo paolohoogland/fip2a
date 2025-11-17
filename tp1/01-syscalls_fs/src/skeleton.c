@@ -186,58 +186,6 @@ void ls_like(const char* path) {
     closedir(dir);
 }
 
-void affiche_message(const char *message, char *prog_a_exec) {
-  /* PT1 */
-  // if(message == NULL) {
-  //     fprintf(stderr, "Message NULL reçu\n");
-  //     exit(EXIT_FAILURE);
-  // }
-  // printf("Mot : %s\n", message);
-
-  /* PT2 */
-  pid_t pid = fork();
-  if(pid < 0) {
-      perror("Error creating child process (fork)");
-      exit(EXIT_FAILURE);
-  }
-
-  if(pid == 0){ // Child process
-    fprintf(stdout, "Child [PID %d] ", getpid());
-
-    close(1); // Close stdout
-
-    char template[] = "/tmp/proc-exerciseXXXXXX"; 
-    // using mkstemp for unique temp file
-    // XXXXXX will be replaced by mkstemp to create a unique filename
-    int fd = mkstemp(template);
-    if(fd < 0) {
-        perror("Error creating temp file");
-        exit(EXIT_FAILURE);
-    }
-
-    printf("fd open in child: %d\n", fd);
-
-    // Redirect stdout to the temp file
-    if (dup2(fd, STDOUT_FILENO) == -1) {
-          perror("dup2");
-          exit(EXIT_FAILURE);
-      }
-
-      execlp(prog_a_exec, prog_a_exec, NULL); // Execute the program
-      perror("execlp failed");
-      exit(EXIT_FAILURE);
-  } else { // Parent process
-    fprintf(stdout, "Parent [PID %d] ", getpid());
-
-    int status;
-    waitpid(pid, &status, 0); // Wait for child to finish
-
-    if (WIFEXITED(status)) {
-        printf("That's all folks, exit status: %d\n", WEXITSTATUS(status));
-    }
-  }
-}
-
 /**
  * Binary main loop
  *
